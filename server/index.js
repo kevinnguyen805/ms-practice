@@ -33,14 +33,34 @@ server.get('/get-message/:id', (req, res) => {
      client.messages(`${id}`)
      .fetch()
      .then((message) => {
-          // console.log('success', message.body)
           res.send(message.body)
      })
 })
 
+server.get('/get-message/2010-04-01/Accounts/:id/Messages.json', (req, res) => {
+     // TODO - get all messages from Twilio SID account
+     // client.messages.list({limit: 20}).then(messages => messages.forEach(m => console.log(m.body)))
+     // client.messages.list({limit: 20}).then(messages => messages.forEach((item) => res.status(201).json(item.body)))
+
+     client.messages.list({limit: 100}).then((message) => {
+          let messages = message.map(item => item.body)
+          res.status(201).json(messages)
+     })
+})
+
+//TODO - get all messages by filtered date
+
+
+
+// TODO - delete/redact a message 
+
+
+
+
 
 
 let port = process.env.PORT || 4000 
+
 server.listen(port, () => {
      console.log(`Server is listening on port ${port}`)
 })

@@ -28,9 +28,7 @@ function App() {
   const handleSubmit = event => {
     event.preventDefault()
     axios.get(`http://localhost:4000/?recipient=${message.phone}&textmessage=${message.textmessage}`).then((message) => {
-      // console.log(message) //message.data === message.sid
-      console.log(message.data)
-
+      console.log(message.data)  // message.data ==== message.sid
       //TODO - remember to spread original array and add message.data after
       setMessageID([...messageID, message.data])
     })
@@ -39,14 +37,22 @@ function App() {
     })
   }
 
-  const getMessage = (event) => {
-    event.preventDefault()
-    axios.get(`http://localhost:4000/get-message/${messageID}`)
+  const getMessage = (item) => {
+    // TODO - had to use () => getMessage(item) in order to pass in parameters
+    axios.get(`http://localhost:4000/get-message/${item}`)
     .then((message) => {
-      console.log(message.data)
+      // console.log(message.data)
       setMessageReturn([...messageReturn, message.data])
     })
   }
+
+  const getAllMessages = (id) => {
+    axios.get(`http://localhost:4000/get-message/2010-04-01/Accounts/${id}/Messages.json`)
+    .then((message) => {
+      console.log(message)
+    })
+  }
+
 
   return (
     <div className="App">
@@ -76,17 +82,16 @@ function App() {
       <div>
         {messageID.length === 0 ? "Please send a message" : messageID.map((item) => 
         (<div>
-          <p key={item.id}>{item}</p>
-        </div>
-        ))}
+          <p key={item}>{item}</p>
+          <button onClick={() => getMessage(item)}>Retrieve message</button>
+        </div>))}
       </div>
 
-              <button onClick={getMessage}>Getting message</button>
+              {/* <button onClick={getMessage}>Getting message</button> */}
 
 
       <div>
-        { messageReturn.length === 0 ? "Please retrieve a message" : messageReturn.map((item) => (<p>{item}</p>))
-        }
+        { messageReturn.length === 0 ? "Please retrieve a message" : messageReturn.map((item) => (<p>{item}</p>))}
       </div>
     </div>
   );
